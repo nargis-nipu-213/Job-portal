@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-3xl font-bold">Available Jobs</h1>
+  {% if user.is_authenticated and user.user_type == 'RECRUITER' %}
+    <a href="{% url 'job_create' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Post a Job</a>
+  {% endif %}
+</div>
+
+<!-- Search and Skill Match Section -->
+<div class="bg-white p-6 rounded shadow mb-6">
+  <div class="flex gap-4 items-center mb-4">
+    <!-- Search Bar -->
+    <form method="get" class="flex gap-2 flex-1">
+      <input type="text" name="q" placeholder="Search jobs..." class="flex-1 border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500" value="{{ query }}"/>
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-medium">Search</button>
+      {% if view_type == 'matched' %}
+        <input type="hidden" name="view" value="matched">
+      {% endif %}
+    </form>
+    
+    <!-- Skill Match Button (for jobseekers only) -->
+    {% if show_skill_match %}
+      <a href="?view=matched{% if query %}&q={{ query }}{% endif %}" class="{% if view_type == 'matched' %}bg-green-600 text-white{% else %}bg-gray-300 text-gray-700{% endif %} px-6 py-2 rounded hover:bg-green-700 font-medium whitespace-nowrap">
+        Skill Match Jobs
+      </a>
+    {% endif %}
+  </div>
+  
+  <!-- Available Jobs Text -->
+  <p class="text-gray-600 font-medium text-sm">
+    {% if view_type == 'matched' %}
+      Showing skill-matched jobs
+    {% else %}
+      Showing available jobs
+    {% endif %}
+  </p>
+</div>
+
+<!-- Jobs List -->
+<div class="space-y-4">
+  {% for job in jobs %}
+    <div class="bg-white p-5 rounded shadow hover:shadow-lg transition border-l-4 border-blue-500">
+      <div class="flex justify-between items-start mb-2">
+        <h2 class="text-xl font-bold text-blue-600">{{ job.title }}</h2>
+        {% if job.company_logo %}
+          <img src="{{ job.company_logo.url }}" alt="Company Logo" class="h-12 w-12 object-cover rounded">
+        {% endif %}
+      </div>
+      <p class="text-sm text-gray-600 mb-2 font-medium">{{ job.recruiter.recruiterprofile.company_name|default:"Company" }}</p>
+      <p class="text-sm text-gray-700 mb-2"><strong>Openings:</strong> {{ job.openings }} | <strong>Skills:</strong> {{ job.skills }}</p>
+      <p class="text-gray-700 mb-3">{{ job.description|truncatechars:150 }}</p>
+      <a href="{% url 'job_detail' job.id %}" class="text-blue-600 hover:underline font-medium">View Details →</a>
+    </div>
+  {% empty %}
+    <p class="text-center text-gray-600 py-8">No jobs found matching your criteria.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6">Post a New Job</h1>
+
+<div class="bg-white p-6 rounded shadow-lg max-w-2xl">
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    <div>
+      <label class="block font-semibold mb-2">Job Title *</label>
+      <input name="title" class="w-full border p-3 rounded" placeholder="e.g., Senior Python Developer" required/>
+    </div>
+    
+    <div>
+      <label class="block font-semibold mb-2">Company Logo</label>
+      <input name="company_logo" type="file" accept="image/*" class="w-full border p-3 rounded"/>
+      <p class="text-sm text-gray-600 mt-1">Upload your company logo (optional)</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block font-semibold mb-2">Number of Openings *</label>
+        <input name="openings" type="number" class="w-full border p-3 rounded" value="1" min="1" required/>
+      </div>
+      <div>
+        <label class="block font-semibold mb-2">Required Skills *</label>
+        <input name="skills" class="w-full border p-3 rounded" placeholder="e.g., Python, Django, PostgreSQL" required/>
+      </div>
+    </div>
+
+    <div>
+      <label class="block font-semibold mb-2">Job Description *</label>
+      <textarea name="description" class="w-full border p-3 rounded h-32" placeholder="Describe the job role, responsibilities, and requirements..." required></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 font-medium">Post Job</button>
+      <a href="{% url 'dashboard' %}" class="bg-gray-400 text-white px-6 py-3 rounded hover:bg-gray-500 font-medium">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
