@@ -1,118 +1,161 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="mb-10">
-  <h1 class="text-3xl font-black text-slate-900 tracking-tight">My Profile</h1>
-  <p class="text-slate-500">Manage your personal information and professional details.</p>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-  
-  <div class="space-y-6">
-    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-100">
-          {{ user.username|slice:":1"|upper }}
-        </div>
+<div class="max-w-6xl mx-auto py-8 px-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
         <div>
-          <h3 class="font-bold text-slate-900 leading-tight">{{ user.username }}</h3>
-          <span class="text-xs font-bold uppercase tracking-widest {% if user.user_type == 'JOBSEEKER' %}text-blue-600{% else %}text-emerald-600{% endif %}">
-            {% if user.user_type == 'JOBSEEKER' %}Job Seeker{% else %}Recruiter{% endif %}
-          </span>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight">My Profile</h1>
+            <p class="text-slate-500 font-medium mt-1">Personalize your identity and professional presence.</p>
         </div>
-      </div>
-
-      <div class="space-y-4 border-t border-slate-50 pt-4">
-        <div>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name</p>
-          <p class="text-sm font-semibold text-slate-700">{{ user.first_name|default:"Not set" }}</p>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Address</p>
-          <p class="text-sm font-semibold text-slate-700">{{ user.email }}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 p-6 rounded-3xl text-white shadow-xl shadow-slate-200">
-      <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-4 italic">
-        {% if user.user_type == 'JOBSEEKER' %}Professional Skills{% else %}Company Identity{% endif %}
-      </h3>
-      
-      {% if user.user_type == 'JOBSEEKER' %}
-        <div class="space-y-4">
-          <p class="text-sm leading-relaxed text-slate-300">{{ profile.skills|default:"No skills added yet." }}</p>
-          {% if profile.resume %}
-            <a href="{{ profile.resume.url }}" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              View Resume
+        <div class="flex gap-3">
+            <a href="{% url 'dashboard' %}" class="bg-white border border-slate-200 text-slate-600 px-6 py-3 rounded-2xl font-bold hover:bg-slate-50 transition-all flex items-center gap-2 shadow-sm">
+                <i class="fas fa-chart-pie text-xs"></i> Dashboard
             </a>
-          {% endif %}
         </div>
-      {% else %}
-        <div class="space-y-4">
-          <p class="font-bold text-lg text-white">{{ profile.company_name|default:"Enter Company Name" }}</p>
-          <p class="text-sm text-slate-400 line-clamp-3">{{ profile.company_description|default:"No description set." }}</p>
-        </div>
-      {% endif %}
     </div>
-  </div>
 
-  <div class="lg:col-span-2">
-    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-      <h2 class="text-xl font-bold text-slate-900 mb-8 flex items-center gap-2">
-        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Update Information
-      </h2>
-      
-      <form method="post" enctype="multipart/form-data" class="space-y-6">
-        {% csrf_token %}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {% if user.user_type == 'JOBSEEKER' %}
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">Skills (comma-separated)</label>
-            <textarea name="skills" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all h-32 text-slate-700" placeholder="e.g., Python, Django, Tailwind CSS" required>{{ profile.skills }}</textarea>
-          </div>
-
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">Resume (PDF/DOC)</label>
-            <div class="flex items-center justify-center w-full">
-                <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-8 h-8 mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <p class="mb-2 text-sm text-slate-500"><span class="font-bold text-blue-600">Click to upload</span> or drag and drop</p>
+        <div class="lg:col-span-4 space-y-6">
+            
+            <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-3xl flex items-center justify-center text-white font-black text-3xl shadow-xl shadow-blue-200 mb-6 mx-auto md:mx-0">
+                        {{ user.username|slice:":1"|upper }}
                     </div>
-                    <input type="file" name="resume" accept=".pdf,.doc,.docx" class="hidden" />
-                </label>
+                    
+                    <div class="text-center md:text-left space-y-1">
+                        <h3 class="text-2xl font-black text-slate-900 leading-tight">{{ user.username }}</h3>
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest {% if user.user_type == 'JOBSEEKER' %}bg-blue-100 text-blue-600{% else %}bg-emerald-100 text-emerald-600{% endif %}">
+                            <span class="w-1.5 h-1.5 rounded-full mr-2 {% if user.user_type == 'JOBSEEKER' %}bg-blue-600{% else %}bg-emerald-600{% endif %}"></span>
+                            {% if user.user_type == 'JOBSEEKER' %}Job Seeker{% else %}Recruiter{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-8 space-y-5 pt-8 border-t border-slate-100">
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
+                                <i class="fas fa-signature text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Full Name</p>
+                                <p class="text-sm font-bold text-slate-700">{{ user.first_name|default:"No name set" }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
+                                <i class="fas fa-envelope text-xs"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Address</p>
+                                <p class="text-sm font-bold text-slate-700 truncate">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% if profile.resume %}
-              <p class="text-xs text-slate-400 mt-3 flex items-center gap-1 font-medium">
-                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
-                Current file: {{ profile.resume.name|truncatechars:30 }}
-              </p>
-            {% endif %}
-          </div>
-        {% else %}
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">Company Name</label>
-            <input name="company_name" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all text-slate-700" value="{{ profile.company_name }}" required/>
-          </div>
 
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-2">Company Description</label>
-            <textarea name="company_description" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:bg-white transition-all h-32 text-slate-700">{{ profile.company_description }}</textarea>
-          </div>
-        {% endif %}
-
-        <div class="flex flex-col sm:flex-row gap-4 pt-4">
-          <button type="submit" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all active:scale-95">
-            Save Changes
-          </button>
-          <a href="{% url 'dashboard' %}" class="bg-slate-100 text-slate-600 px-8 py-4 rounded-2xl font-bold hover:bg-slate-200 text-center transition">
-            Back to Dashboard
-          </a>
+            <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-slate-900/20">
+                <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-2">
+                    <i class="fas fa-bolt text-blue-400"></i>
+                    {% if user.user_type == 'JOBSEEKER' %}Skills Portfolio{% else %}Company Identity{% endif %}
+                </h3>
+                
+                {% if user.user_type == 'JOBSEEKER' %}
+                    <div class="space-y-6">
+                        <p class="text-sm leading-relaxed text-slate-300 font-medium italic">
+                            {{ profile.skills|default:"No skills added yet. Update your profile to stand out!" }}
+                        </p>
+                        {% if profile.resume %}
+                            <a href="{{ profile.resume.url }}" target="_blank" class="flex items-center justify-between w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl transition-all group border border-white/5">
+                                <span class="text-xs font-bold uppercase tracking-widest">View Resume</span>
+                                <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="space-y-4">
+                        <p class="font-black text-xl text-white">{{ profile.company_name|default:"Company Name" }}</p>
+                        <p class="text-sm text-slate-400 line-clamp-4 leading-relaxed italic">
+                            {{ profile.company_description|default:"Share your company's mission and vision." }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-      </form>
+
+        <div class="lg:col-span-8">
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-xl shadow-slate-200/50">
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                        <i class="fas fa-pen-nib"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Update Profile</h2>
+                        <p class="text-sm text-slate-500 font-medium">Changes will be visible to potential connections.</p>
+                    </div>
+                </div>
+                
+                <form method="post" enctype="multipart/form-data" class="space-y-8">
+                    {% csrf_token %}
+                    
+                    {% if user.user_type == 'JOBSEEKER' %}
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700 ml-1">Expertise & Skills</label>
+                            <textarea name="skills" 
+                                      class="w-full bg-slate-50 border border-slate-200 p-5 rounded-[2rem] focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all h-40 text-slate-700 font-medium placeholder:text-slate-300 shadow-inner" 
+                                      placeholder="e.g., Python, Django, Tailwind CSS" required>{{ profile.skills }}</textarea>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700 ml-1">Curriculum Vitae (PDF/DOC)</label>
+                            <div class="relative group">
+                                <label class="flex flex-col items-center justify-center w-full h-44 border-2 border-slate-200 border-dashed rounded-[2rem] cursor-pointer bg-slate-50 group-hover:bg-white group-hover:border-blue-400 transition-all shadow-inner">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-slate-400 group-hover:text-blue-500 mb-4 transition-colors">
+                                            <i class="fas fa-cloud-upload-alt text-2xl"></i>
+                                        </div>
+                                        <p class="text-sm text-slate-500 font-medium"><span class="font-black text-blue-600">Drop your file</span> or click to browse</p>
+                                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-1">Maximum size: 5MB</p>
+                                    </div>
+                                    <input type="file" name="resume" accept=".pdf,.doc,.docx" class="hidden" />
+                                </label>
+                            </div>
+                            {% if profile.resume %}
+                                <div class="flex items-center gap-3 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 mt-4">
+                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-emerald-600 shadow-sm">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <p class="text-xs font-bold text-emerald-700">Active File: <span class="opacity-75">{{ profile.resume.name|truncatechars:25 }}</span></p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700 ml-1">Company Name</label>
+                            <input name="company_name" 
+                                   class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all text-slate-700 font-bold shadow-inner" 
+                                   value="{{ profile.company_name }}" required/>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-sm font-bold text-slate-700 ml-1">Company Story</label>
+                            <textarea name="company_description" 
+                                      class="w-full bg-slate-50 border border-slate-200 p-5 rounded-[2rem] focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 focus:bg-white transition-all h-44 text-slate-700 font-medium shadow-inner">{{ profile.company_description }}</textarea>
+                        </div>
+                    {% endif %}
+
+                    <div class="pt-6">
+                        <button type="submit" class="w-full sm:w-auto bg-blue-600 text-white px-10 py-5 rounded-[1.5rem] font-black hover:bg-blue-700 shadow-xl shadow-blue-200 transition-all active:scale-[0.97] flex items-center justify-center gap-3">
+                            <i class="fas fa-save"></i>
+                            Apply Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

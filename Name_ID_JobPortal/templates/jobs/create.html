@@ -1,41 +1,95 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1 class="text-3xl font-bold mb-6">Post a New Job</h1>
-
-<div class="bg-white p-6 rounded shadow-lg max-w-2xl">
-  <form method="post" enctype="multipart/form-data" class="space-y-4">
-    {% csrf_token %}
-    <div>
-      <label class="block font-semibold mb-2">Job Title *</label>
-      <input name="title" class="w-full border p-3 rounded" placeholder="e.g., Senior Python Developer" required/>
-    </div>
+<div class="max-w-4xl mx-auto py-10 px-4">
     
-    <div>
-      <label class="block font-semibold mb-2">Company Logo</label>
-      <input name="company_logo" type="file" accept="image/*" class="w-full border p-3 rounded"/>
-      <p class="text-sm text-gray-600 mt-1">Upload your company logo (optional)</p>
+    <div class="mb-10 text-center md:text-left">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 rounded-2xl text-emerald-600 mb-4 shadow-sm border border-emerald-100">
+            <i class="fas fa-briefcase text-2xl"></i>
+        </div>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight">Post a New Job</h1>
+        <p class="text-slate-500 font-medium mt-2">Find the perfect talent for your company today.</p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="block font-semibold mb-2">Number of Openings *</label>
-        <input name="openings" type="number" class="w-full border p-3 rounded" value="1" min="1" required/>
-      </div>
-      <div>
-        <label class="block font-semibold mb-2">Required Skills *</label>
-        <input name="skills" class="w-full border p-3 rounded" placeholder="e.g., Python, Django, PostgreSQL" required/>
-      </div>
+    <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <form method="post" enctype="multipart/form-data" class="p-8 md:p-12 space-y-8">
+            {% csrf_token %}
+            
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Job Title *</label>
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                        <i class="fas fa-heading text-sm"></i>
+                    </span>
+                    <input name="title" 
+                           class="w-full bg-slate-50 border border-slate-200 pl-12 pr-6 py-4 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 focus:bg-white transition-all text-slate-700 font-bold placeholder:text-slate-300" 
+                           placeholder="e.g., Senior Python Developer" required/>
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Company Logo</label>
+                <div class="relative group">
+                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-2xl cursor-pointer bg-slate-50 hover:bg-white hover:border-emerald-400 transition-all">
+                        <div class="flex flex-col items-center justify-center pt-4 pb-4">
+                            <i class="fas fa-image text-2xl text-slate-300 group-hover:text-emerald-500 mb-2 transition-colors"></i>
+                            <p class="text-sm text-slate-500 font-medium">Click to upload <span class="text-emerald-600">Company Logo</span></p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">PNG, JPG or SVG (Optional)</p>
+                        </div>
+                        <input name="company_logo" type="file" accept="image/*" class="hidden"/>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Openings *</label>
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                            <i class="fas fa-users text-sm"></i>
+                        </span>
+                        <input name="openings" type="number" 
+                               class="w-full bg-slate-50 border border-slate-200 pl-12 pr-6 py-4 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 focus:bg-white transition-all text-slate-700 font-bold" 
+                               value="1" min="1" required/>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Required Skills *</label>
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-5 flex items-center text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                            <i class="fas fa-tags text-sm"></i>
+                        </span>
+                        <input name="skills" 
+                               class="w-full bg-slate-50 border border-slate-200 pl-12 pr-6 py-4 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 focus:bg-white transition-all text-slate-700 font-bold placeholder:text-slate-300" 
+                               placeholder="e.g., Python, Django, SQL" required/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Job Description *</label>
+                <textarea name="description" 
+                          class="w-full bg-slate-50 border border-slate-200 p-6 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500 focus:bg-white transition-all text-slate-700 font-medium h-48 leading-relaxed placeholder:text-slate-300" 
+                          placeholder="What is the role about? Mention responsibilities, requirements, and perks..." required></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-50">
+                <button type="submit" 
+                        class="flex-[2] bg-emerald-600 text-white px-8 py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 shadow-xl shadow-emerald-100 transition-all active:scale-[0.98] flex items-center justify-center gap-3">
+                    <i class="fas fa-paper-plane text-sm"></i>
+                    Publish Job Post
+                </button>
+                <a href="{% url 'dashboard' %}" 
+                   class="flex-1 bg-slate-100 text-slate-600 px-8 py-5 rounded-2xl font-bold hover:bg-slate-200 text-center transition-all flex items-center justify-center gap-2">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 
-    <div>
-      <label class="block font-semibold mb-2">Job Description *</label>
-      <textarea name="description" class="w-full border p-3 rounded h-32" placeholder="Describe the job role, responsibilities, and requirements..." required></textarea>
+    <div class="mt-8 flex items-center justify-center gap-2 text-slate-400">
+        <i class="fas fa-info-circle text-[10px]"></i>
+        <p class="text-[10px] font-bold uppercase tracking-[0.1em]">All jobs are reviewed before being listed live.</p>
     </div>
-
-    <div class="flex gap-3">
-      <button type="submit" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 font-medium">Post Job</button>
-      <a href="{% url 'dashboard' %}" class="bg-gray-400 text-white px-6 py-3 rounded hover:bg-gray-500 font-medium">Cancel</a>
-    </div>
-  </form>
 </div>
 {% endblock %}
